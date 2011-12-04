@@ -40,7 +40,7 @@ public class DirectoryTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setDirectoryExists(true);
         this.directoryRequestHandler = new Directory(directoryToServe, fileInfo, logger);
-        assertTrue("Can handle should return true when the directory exists.", this.directoryRequestHandler.canHandle(this.request));
+        assertTrue("Can handle should return true when the directory exists.", this.directoryRequestHandler.canRespond(this.request));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DirectoryTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setDirectoryExists(false);
         this.directoryRequestHandler = new Directory(directoryToServe, fileInfo, logger);
-        assertFalse("Can handle should return false when the directory doesn't exist.", this.directoryRequestHandler.canHandle(this.request));
+        assertFalse("Can handle should return false when the directory doesn't exist.", this.directoryRequestHandler.canRespond(this.request));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class DirectoryTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setDirectoryExists(true);
         this.directoryRequestHandler = new Directory(directoryToServe, fileInfo, logger);
-        assertFalse("Can handle should return false when the directory doesn't exist.", this.directoryRequestHandler.canHandle(request));
+        assertFalse("Can handle should return false when the directory doesn't exist.", this.directoryRequestHandler.canRespond(request));
     }
 
     private Logger logger;

@@ -2,7 +2,6 @@ package HttpServer.Responders;
 
 import HttpServer.Request;
 import HttpServer.RequestHeader;
-import HttpServer.Utility.FileInfo;
 import HttpServer.Utility.Mocks.FileInfoMock;
 import SocketServer.Utility.Logging;
 import org.junit.After;
@@ -41,7 +40,7 @@ public class FileTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setFileExists(true);
         this.fileRequestHandler = new File(directoryToServe, fileInfo, logger);
-        assertTrue("Can handle should return true when the file exists.", this.fileRequestHandler.canHandle(this.request));
+        assertTrue("Can handle should return true when the file exists.", this.fileRequestHandler.canRespond(this.request));
     }
 
     @Test
@@ -49,7 +48,7 @@ public class FileTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setFileExists(false);
         this.fileRequestHandler = new File(directoryToServe, fileInfo, logger);
-        assertFalse("Can handle should return false when the file doesn't exist.", this.fileRequestHandler.canHandle(this.request));
+        assertFalse("Can handle should return false when the file doesn't exist.", this.fileRequestHandler.canRespond(this.request));
     }
 
     @Test
@@ -58,7 +57,7 @@ public class FileTest {
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setFileExists(true);
         this.fileRequestHandler = new File(directoryToServe, fileInfo, logger);
-        assertFalse("Can handle should return false when the file doesn't exist.", this.fileRequestHandler.canHandle(request));
+        assertFalse("Can handle should return false when the file doesn't exist.", this.fileRequestHandler.canRespond(request));
     }
 
     private Logger logger;

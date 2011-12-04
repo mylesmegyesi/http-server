@@ -1,1 +1,1 @@
-web: java -jar target/http-server-0.1-SNAPSHOT-uberjar.jar -p 8080 -d .
+web: java -jar target/http-server-0.1-SNAPSHOT-uberjar.jar -p 8080 -d public

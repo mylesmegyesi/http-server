@@ -1,11 +1,13 @@
 package HttpServer;
 
-import SocketServer.Exceptions.BadRequestException;
+import HttpServer.Exceptions.BadRequestException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +15,7 @@ import java.util.Scanner;
 /**
  * Author: Myles Megyesi
  */
-public class RequestParser implements SocketServer.RequestParser {
+public class RequestParser {
 
     public Request parse(InputStream inputStream) throws BadRequestException {
         String rawRequest;
@@ -29,7 +31,13 @@ public class RequestParser implements SocketServer.RequestParser {
             throw new BadRequestException(String.format("Improperly formatted request line: %s", firstLine));
         }
         String action = requestItems[0].trim();
-        String requestUri = requestItems[1].trim();
+        URI uri;
+        try {
+            uri = new URI(requestItems[1].trim());
+        } catch (URISyntaxException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+        String requestUri = uri.getPath();
         String protocol = requestItems[2].trim();
         List<RequestHeader> requestHeaders = new ArrayList<RequestHeader>();
         while (scanner.hasNextLine()) {

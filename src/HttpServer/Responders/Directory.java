@@ -1,13 +1,13 @@
 package HttpServer.Responders;
 
-import HttpServer.Request;
-import HttpServer.Responder;
-import HttpServer.Response;
-import HttpServer.ResponseHeader;
+import HttpServer.*;
+import HttpServer.Exceptions.ResponseException;
+import HttpServer.Responses.OK;
 import HttpServer.Utility.FileInfo;
-import SocketServer.Exceptions.ResponseException;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,20 +17,13 @@ import java.util.logging.Logger;
 public class Directory extends Responder {
 
     public Directory(String directoryToServe, FileInfo fileInfo, Logger logger) {
+        super(logger);
         this.fileInfo = fileInfo;
         this.directoryToServe = directoryToServe;
     }
 
-    public FileInfo getFileInfo() {
-        return fileInfo;
-    }
-
-    public void setFileInfo(FileInfo fileInfo) {
-        this.fileInfo = fileInfo;
-    }
-
     @Override
-    public boolean canHandle(Request request) {
+    public boolean canRespond(Request request) {
         if (!request.getAction().equals("GET")) {
             return false;
         }
@@ -39,10 +32,11 @@ public class Directory extends Responder {
 
     @Override
     public Response getResponse(Request request) throws ResponseException {
-        Response response = new Response("HTTP/1.1", 200, "OK", new ArrayList<ResponseHeader>(), null);
-        response.addResponseHeader(new ResponseHeader("Content-Type", "text/html"));
-        response.setBody(this.getDirectoryHtml(request.getRequestUri()));
-        return response;
+        List<ResponseHeader> responseHeaders = new ArrayList<ResponseHeader>();
+        responseHeaders.add(new DateHeader(new Date()));
+        responseHeaders.add(new ResponseHeader("Content-Type", "text/html"));
+        String html = this.getDirectoryHtml(request.getRequestUri());
+        return new OK(responseHeaders, new ByteArrayInputStream(html.getBytes()));
     }
 
     private String getDirectoryHtml(String directory) {

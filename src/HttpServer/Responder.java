@@ -1,31 +1,35 @@
 package HttpServer;
 
-import SocketServer.Exceptions.ResponseException;
+import HttpServer.Exceptions.ResponseException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 /**
  * Author: Myles Megyesi
  */
-public abstract class Responder implements SocketServer.Responder {
+public abstract class Responder {
 
-    public abstract boolean canHandle(Request request);
-
-    public boolean canHandle(SocketServer.Request request) {
-        return this.canHandle((Request) request);
+    public Responder(Logger logger) {
+        this.logger = logger;
     }
+
+    public abstract boolean canRespond(Request request);
 
     public abstract Response getResponse(Request request) throws ResponseException;
 
-    public void handle(OutputStream outputStream, SocketServer.Request request) throws ResponseException {
-        Response response = this.getResponse((Request) request);
-        String respondWith = response.getResponseString();
+    public void respond(OutputStream outputStream, Request request) throws ResponseException {
+        this.logger.info(String.format("Responding to %s %s", request.getAction(), request.getRequestUri()));
+        Response response = this.getResponse(request);
         try {
-            outputStream.write(respondWith.getBytes());
+            response.writeStatusLine(outputStream);
+            response.writeHeaders(outputStream);
+            response.writeBody(outputStream);
         } catch (IOException e) {
             throw new ResponseException(e.getMessage());
         }
     }
+
+    protected Logger logger;
 }

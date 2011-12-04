@@ -2,10 +2,8 @@ package HttpServer;
 
 import HttpServer.Responders.Directory;
 import HttpServer.Responders.File;
-import HttpServer.Responders.NotFound;
+import HttpServer.Responders.Form;
 import HttpServer.Utility.FileInfo;
-import SocketServer.RequestHandlerFactory;
-import SocketServer.SocketServerShutdownHandler;
 import SocketServer.Utility.Logging;
 
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class Main {
         String directory = ".";
 
         if (args.length == 4) {
-           port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[1]);
             directory = args[3];
         }
 
@@ -36,16 +34,15 @@ public class Main {
         Logger logger = Logging.getLoggerAndSetLevel(Main.class.getName(), Level.ALL);
 
         // Setup responders
-        List<SocketServer.Responder> responders = new ArrayList<SocketServer.Responder>();
+        List<Responder> responders = new ArrayList<Responder>();
+        responders.add(new Form(logger));
         responders.add(new Directory(directory, fileInfo, logger));
         responders.add(new File(directory, fileInfo, logger));
-        responders.add(new NotFound());
 
         RequestParser requestParser = new RequestParser();
 
-        RequestHandlerFactory requestHandlerFactory = new RequestHandlerFactory(requestParser, responders, logger);
+        RequestHandlerFactory requestHandlerFactory = new RequestHandlerFactory(requestParser, responders, new HttpServer.Responses.NotFound(), logger);
         SocketServer.SocketServer server = new SocketServer.SocketServer(port, requestHandlerFactory, logger);
-        Runtime.getRuntime().addShutdownHook(new SocketServerShutdownHandler(server));
         server.startListening();
     }
 }

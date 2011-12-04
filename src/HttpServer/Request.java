@@ -5,11 +5,7 @@ import java.util.List;
 /**
  * Author: Myles Megyesi
  */
-public class Request extends SocketServer.Request {
-
-    protected Request() {
-
-    }
+public class Request {
 
     public Request(String action, String requestUri, String protocolVersion, List<RequestHeader> requestHeaders, String body, String rawRequest) {
         this.action = action;

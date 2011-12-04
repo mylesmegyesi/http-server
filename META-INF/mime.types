@@ -33,6 +33,10 @@ text/html                    htm html shtml
 
 text/css                     css
 
+text/xml                     xml
+
+application/xml              xml
+
 text/javascript              js
 
 application/octet-stream     bin class

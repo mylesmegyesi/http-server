@@ -27,6 +27,7 @@ public class RequestParser {
             throw new BadRequestException(e.getMessage());
         }
         Scanner scanner = new Scanner(rawRequest);
+        System.out.println(rawRequest);
         String firstLine = scanner.nextLine();
         String[] requestItems = firstLine.split(" ");
         if (requestItems.length != 3) {

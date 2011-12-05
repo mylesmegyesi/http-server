@@ -6,8 +6,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,13 +33,13 @@ public class RequestParser {
             throw new BadRequestException(String.format("Improperly formatted request line: %s", firstLine));
         }
         String action = requestItems[0].trim();
-        URI uri;
-        try {
-            uri = new URI(requestItems[1].trim());
-        } catch (URISyntaxException e) {
-            throw new BadRequestException(e.getMessage());
+        String url = requestItems[1].trim();
+        String[] urlParts = url.split("\\?");
+        String requestUri = urlParts[0];
+        String query = "";
+        if (urlParts.length > 1) {
+            query = urlParts[1];
         }
-        String requestUri = uri.getPath();
         String protocol = requestItems[2].trim();
         List<RequestHeader> requestHeaders = new ArrayList<RequestHeader>();
         while (scanner.hasNextLine()) {
@@ -51,7 +53,7 @@ public class RequestParser {
         if (scanner.hasNextLine()) {
             body = scanner.nextLine();
         }
-        return new Request(action, requestUri, protocol, requestHeaders, body, rawRequest);
+        return new Request(action, requestUri, query, protocol, requestHeaders, body, rawRequest);
     }
 
     private RequestHeader parseHeader(String headerLine) throws BadRequestException {

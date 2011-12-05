@@ -41,6 +41,18 @@ public class HttpRequestParserTest {
     }
 
     @Test
+    public void parsesTheUriWithQuery() throws Exception {
+        Request request = this.requestParser.parse(new ByteArrayInputStream("GET /path/file.html?field1=value HTTP/1.0".getBytes()));
+        assertEquals("/path/file.html", request.getRequestUri());
+    }
+
+    @Test
+    public void parsesTheQueryString() throws Exception {
+        Request request = this.requestParser.parse(new ByteArrayInputStream("GET /path/file.html?field1=value HTTP/1.0".getBytes()));
+        assertEquals("field1=value", request.getQuery());
+    }
+
+    @Test
     public void parsesTheProtocolVersion() throws Exception {
         Request request = this.requestParser.parse(new ByteArrayInputStream("GET /path/file.html HTTP/1.0".getBytes()));
         assertEquals("HTTP/1.0", request.getProtocolVersion());

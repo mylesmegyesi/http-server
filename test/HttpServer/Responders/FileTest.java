@@ -27,7 +27,7 @@ public class FileTest {
     @Before
     public void setUp() throws Exception {
         this.logger = Logging.getLoggerAndSetLevel(this.getClass().getName(), Level.SEVERE);
-        this.request = new Request("GET", "/someFile.html", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
+        this.request = new Request("GET", "/someFile.html", "", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
     }
 
     @After
@@ -53,7 +53,7 @@ public class FileTest {
 
     @Test
     public void testCantHandleIfIsNotAGetRequest() throws Exception {
-        Request request = new Request("POST", "/someFile.html", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
+        Request request = new Request("POST", "/someFile.html", "", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setFileExists(true);
         this.fileRequestHandler = new File(directoryToServe, fileInfo, logger);

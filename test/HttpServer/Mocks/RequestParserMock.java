@@ -15,7 +15,7 @@ public class RequestParserMock extends RequestParser{
     @Override
     public Request parse(InputStream inputStream) {
         this.calledCount++;
-        return new RequestMock("", "", "", new ArrayList<RequestHeader>(), "", "");
+        return new RequestMock("", "", "", "", new ArrayList<RequestHeader>(), "", "");
     }
 
     public int getCalledCount() {

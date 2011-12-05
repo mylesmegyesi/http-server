@@ -9,7 +9,7 @@ import java.util.List;
  * Author: Myles Megyesi
  */
 public class RequestMock extends Request{
-    public RequestMock(String action, String requestUri, String protocolVersion, List<RequestHeader> requestHeaders, String body, String rawRequest) {
-        super(action, requestUri, protocolVersion, requestHeaders, body, rawRequest);
+    public RequestMock(String action, String requestUri, String query, String protocolVersion, List<RequestHeader> requestHeaders, String body, String rawRequest) {
+        super(action, requestUri, query, protocolVersion, requestHeaders, body, rawRequest);
     }
 }

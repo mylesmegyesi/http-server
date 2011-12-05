@@ -7,9 +7,10 @@ import java.util.List;
  */
 public class Request {
 
-    public Request(String action, String requestUri, String protocolVersion, List<RequestHeader> requestHeaders, String body, String rawRequest) {
+    public Request(String action, String requestUri, String query, String protocolVersion, List<RequestHeader> requestHeaders, String body, String rawRequest) {
         this.action = action;
         this.requestUri = requestUri;
+        this.query = query;
         this.protocolVersion = protocolVersion;
         this.requestHeaders = requestHeaders;
         this.body = body;
@@ -30,6 +31,14 @@ public class Request {
 
     public void setRequestUri(String requestUri) {
         this.requestUri = requestUri;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public String getProtocolVersion() {
@@ -66,6 +75,7 @@ public class Request {
 
     private String action;
     private String requestUri;
+    private String query;
     private String protocolVersion;
     private String body;
     private String rawRequest;

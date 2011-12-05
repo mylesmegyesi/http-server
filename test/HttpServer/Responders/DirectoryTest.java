@@ -27,7 +27,7 @@ public class DirectoryTest {
     @Before
     public void setUp() throws Exception {
         this.logger = Logging.getLoggerAndSetLevel(this.getClass().getName(), Level.SEVERE);
-        this.request = new Request("GET", "/someDir/", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
+        this.request = new Request("GET", "/someDir/", "", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
     }
 
     @After
@@ -53,7 +53,7 @@ public class DirectoryTest {
 
     @Test
     public void testCantHandleIfIsNotAGetRequest() throws Exception {
-        Request request = new Request("POST", "/someDir/", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
+        Request request = new Request("POST", "/someDir/","", "HTTP/1.1", new ArrayList<RequestHeader>(), null, null);
         FileInfoMock fileInfo = new FileInfoMock();
         fileInfo.setDirectoryExists(true);
         this.directoryRequestHandler = new Directory(directoryToServe, fileInfo, logger);

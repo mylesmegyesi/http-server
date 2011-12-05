@@ -63,6 +63,7 @@ public class Form extends Responder {
     }
 
     private String getPostHtml(String query) {
+        this.logger.info("Responding to form request with params " + query);
         StringBuilder builder = new StringBuilder();
         builder.append("<table>");
         builder.append("<tr>");

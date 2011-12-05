@@ -1,1 +1,1 @@
-web: java -jar target/http-server-0.1-SNAPSHOT-uberjar.jar -p $PORT -d public
+web: java -jar target/http-server-0.1-SNAPSHOT-uberjar.jar -p $PORT -d .

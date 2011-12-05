@@ -75,7 +75,8 @@ public class Form extends Responder {
         builder.append("<td>Value</td>");
         builder.append("</tr>");
         String[] params = stringToParse.split("&");
-        for (String param : params) {
+        if (params.length != 0) {
+            for (String param : params) {
             builder.append("<tr>");
             String[] fieldvalue = param.split("=");
             builder.append("<td>");
@@ -86,6 +87,7 @@ public class Form extends Responder {
             builder.append("</td>");
             builder.append("</tr>");
 
+        }
         }
         builder.append("</table>");
         return builder.toString();

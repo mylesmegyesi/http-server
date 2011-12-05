@@ -33,7 +33,7 @@ public class Form extends Responder {
         if (request.getAction().equals("GET")) {
             html = this.getGetHtml();
         } else {
-            html = this.getPostHtml(request.getBody());
+            html = this.getPostHtml(request.getBody(), request.getRequestUri());
         }
         return new OK(responseHeaders, new ByteArrayInputStream(html.getBytes()));
     }
@@ -62,8 +62,8 @@ public class Form extends Responder {
         return builder.toString();
     }
 
-    private String getPostHtml(String query) {
-        this.logger.info("Responding to form request with params " + query);
+    private String getPostHtml(String query, String requestUri) {
+        this.logger.info("Responding to form request with params: " + query + " requestUri: " + requestUri);
         StringBuilder builder = new StringBuilder();
         builder.append("<table>");
         builder.append("<tr>");

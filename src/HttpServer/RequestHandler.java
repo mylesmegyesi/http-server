@@ -49,7 +49,7 @@ public class RequestHandler implements Runnable {
         try {
             request = this.requestParser.parse(inputStream);
         } catch (BadRequestException e) {
-            this.logger.severe("asfom");
+            this.logger.severe(String.format("Failed to parse request: %s", e.getMessage()));
         }
         boolean handled = false;
         for (Responder responder : this.responders) {

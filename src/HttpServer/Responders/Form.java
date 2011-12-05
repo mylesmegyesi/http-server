@@ -33,7 +33,7 @@ public class Form extends Responder {
         if (request.getAction().equals("GET")) {
             html = this.getGetHtml();
         } else {
-            html = this.getPostHtml(request.getBody(), request.getRequestUri());
+            html = this.getPostHtml(request.getBody(), request.getQuery());
         }
         return new OK(responseHeaders, new ByteArrayInputStream(html.getBytes()));
     }
@@ -62,15 +62,19 @@ public class Form extends Responder {
         return builder.toString();
     }
 
-    private String getPostHtml(String query, String requestUri) {
-        this.logger.info("Responding to form request with params: " + query + " requestUri: " + requestUri);
+    private String getPostHtml(String body, String query) {
+        this.logger.info("Responding to form request with params: " + body + " queryString: " + query);
+        String stringToParse = body;
+        if (!query.equals("")) {
+            stringToParse = query;
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("<table>");
         builder.append("<tr>");
         builder.append("<td>Parameter</td>");
         builder.append("<td>Value</td>");
         builder.append("</tr>");
-        String[] params = query.split("&");
+        String[] params = stringToParse.split("&");
         for (String param : params) {
             builder.append("<tr>");
             String[] fieldvalue = param.split("=");

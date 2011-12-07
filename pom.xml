@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>http-server</groupId>
+    <groupId>org.clojars.mylesmegyesi</groupId>
     <artifactId>http-server</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -32,34 +32,6 @@
     <build>
         <sourceDirectory> src/ </sourceDirectory>
         <testSourceDirectory> test/ </testSourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                  <execution>
-                    <phase>package</phase>
-                    <goals>
-                      <goal>shade</goal>
-                    </goals>
-                    <configuration>
-                      <shadedArtifactAttached>true</shadedArtifactAttached>
-                      <shadedClassifierName>uberjar</shadedClassifierName>
-                      <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                          <mainClass>HttpServer.Main</mainClass>
-                        </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
-                            <resource>META-INF/mime.types</resource>
-                            <file>META-INF/mime.types</file>
-                        </transformer>
-                      </transformers>
-                    </configuration>
-                  </execution>
-                </executions>
-              </plugin>
-        </plugins>
     </build>
 
 </project>

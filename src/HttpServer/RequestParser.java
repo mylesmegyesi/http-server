@@ -1,80 +1,64 @@
 package HttpServer;
 
 import HttpServer.Exceptions.BadRequestException;
+import HttpServer.Utility.InputStreamReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Author: Myles Megyesi
  */
 public class RequestParser {
 
-    public Request parse(InputStream inputStream) throws BadRequestException {
-        String rawRequest;
-        try {
-            rawRequest = inputStreamToString(inputStream);
-        } catch (IOException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-        Scanner scanner = new Scanner(rawRequest);
-        String firstLine = scanner.nextLine();
-        String[] requestItems = firstLine.split(" ");
-        if (requestItems.length != 3) {
-            throw new BadRequestException(String.format("Improperly formatted request line: %s", firstLine));
-        }
-        String action = requestItems[0].trim();
-        String url = requestItems[1].trim();
-        String[] urlParts = url.split("\\?");
-        String requestUri = urlParts[0];
-        String query = "";
-        if (urlParts.length > 1) {
-            query = urlParts[1];
-        }
-        String protocol = requestItems[2].trim();
-        List<RequestHeader> requestHeaders = new ArrayList<RequestHeader>();
-        while (scanner.hasNextLine()) {
-            String nextLine = scanner.nextLine().trim();
-            if (nextLine.equals("")) {
-                break; //no more headers
-            }
-            requestHeaders.add(parseHeader(nextLine));
-        }
-        String body = "";
-        if (scanner.hasNextLine()) {
-            body = scanner.nextLine();
-        }
-        return new Request(action, requestUri, query, protocol, requestHeaders, body, rawRequest);
+    public Request parse(InputStream inputStream, InputStreamReader inputStreamReader) throws IOException, BadRequestException {
+        return new Request(this.parseRequestLine(inputStream, inputStreamReader), this.parseHeaders(inputStream, inputStreamReader), inputStream);
     }
 
-    private RequestHeader parseHeader(String headerLine) throws BadRequestException {
+    public RequestLine parseRequestLine(InputStream inputStream, InputStreamReader inputStreamReader) throws IOException, BadRequestException {
+        String requestLine = inputStreamReader.getNextLine(inputStream);
+        String[] requestLineItems = this.splitStringOnWhitespace(requestLine);
+        if (requestLineItems.length != 3) {
+            throw new BadRequestException(String.format("Improperly formatted request line: %s", requestLine));
+        }
+        return this.parseRequestItems(requestLineItems);
+    }
+
+    public String[] splitStringOnWhitespace(String requestLine) {
+        return requestLine.trim().split("\\s+");
+    }
+
+    public RequestLine parseRequestItems(String[] requestLineItems) throws IOException, BadRequestException {
+        String[] requestUriItems = parseRequestUri(requestLineItems[1]);
+        return new RequestLine(requestLineItems[0], requestUriItems[0], requestUriItems[1], requestLineItems[2]);
+    }
+
+    public String[] parseRequestUri(String requestUri) {
+        String[] requestUriItems = new String[]{requestUri, ""};
+        int questionMarkIndex = requestUri.indexOf("?");
+        if (questionMarkIndex != -1) {
+            requestUriItems[0] = requestUri.substring(0, questionMarkIndex);
+            requestUriItems[1] = requestUri.substring(questionMarkIndex + 1, requestUri.length());
+        }
+        return requestUriItems;
+    }
+
+    public List<RequestHeader> parseHeaders(InputStream inputStream, InputStreamReader inputStreamReader) throws BadRequestException, IOException {
+        List<RequestHeader> requestHeaders = new ArrayList<RequestHeader>();
+        String nextLine;
+        while (!(nextLine = inputStreamReader.getNextLine(inputStream)).equals("")) { // headers are terminated by an empty line
+            requestHeaders.add(this.parseHeader(nextLine));
+        }
+        return requestHeaders;
+    }
+
+    public RequestHeader parseHeader(String headerLine) throws BadRequestException {
         int colonIndex = headerLine.indexOf(':');
-        String name = headerLine.substring(0, colonIndex).trim();
-        String value = headerLine.substring(colonIndex + 1, headerLine.length()).trim();
-        if (name == null || value == null) {
+        if (colonIndex == -1 || colonIndex == 0 || colonIndex == headerLine.length() - 1) {
             throw new BadRequestException(String.format("Improperly formatted header: %s", headerLine));
         }
-        return new RequestHeader(name, value);
-    }
-
-    private String inputStreamToString(InputStream input) throws IOException {
-        StringBuilder buffer = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        if (!reader.ready()) {
-            buffer.append((char) reader.read());
-        }
-        while (reader.ready()) {
-            buffer.append((char) reader.read());
-        }
-        return buffer.toString();
+        return new RequestHeader(headerLine.substring(0, colonIndex), headerLine.substring(colonIndex + 1, headerLine.length()).trim());
     }
 }

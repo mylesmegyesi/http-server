@@ -2,6 +2,7 @@ package HttpServer.Responses;
 
 import HttpServer.Response;
 import HttpServer.ResponseHeader;
+import HttpServer.ResponseStatusLine;
 
 import java.io.InputStream;
 import java.util.List;
@@ -11,6 +12,6 @@ import java.util.List;
  */
 public class OK extends Response {
     public OK(List<ResponseHeader> responseHeaders, InputStream body) {
-        super("HTTP/1.1", 200, "OK", responseHeaders, body);
+        super(new ResponseStatusLine("HTTP/1.1", 200, "OK"), responseHeaders, body);
     }
 }

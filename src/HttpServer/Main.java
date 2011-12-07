@@ -1,8 +1,8 @@
 package HttpServer;
 
-import HttpServer.Responders.Directory;
-import HttpServer.Responders.File;
-import HttpServer.Responders.Form;
+import HttpServer.RequestHandlers.Directory;
+import HttpServer.RequestHandlers.File;
+import HttpServer.RequestHandlers.Form;
 import HttpServer.Utility.FileInfo;
 import SocketServer.Utility.Logging;
 
@@ -34,15 +34,15 @@ public class Main {
         Logger logger = Logging.getLoggerAndSetLevel(Main.class.getName(), Level.ALL);
 
         // Setup responders
-        List<Responder> responders = new ArrayList<Responder>();
-        responders.add(new Form(logger));
-        responders.add(new Directory(directory, fileInfo, logger));
-        responders.add(new File(directory, fileInfo, logger));
+        List<RequestHandler> requestHandlers = new ArrayList<RequestHandler>();
+        requestHandlers.add(new Form());
+        requestHandlers.add(new Directory(directory, fileInfo));
+        requestHandlers.add(new File(directory, fileInfo));
 
         RequestParser requestParser = new RequestParser();
 
-        RequestHandlerFactory requestHandlerFactory = new RequestHandlerFactory(requestParser, responders, new HttpServer.Responses.NotFound(), logger);
-        SocketServer.SocketServer server = new SocketServer.SocketServer(port, requestHandlerFactory, logger);
+        RequestDispatcherFactory requestDispatcherFactory = new RequestDispatcherFactory(requestParser, new ResponseWriter(), requestHandlers, new HttpServer.Responses.NotFound(), logger);
+        SocketServer.SocketServer server = new SocketServer.SocketServer(port, requestDispatcherFactory, logger);
         server.startListening();
     }
 }

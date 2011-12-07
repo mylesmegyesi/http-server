@@ -73,6 +73,8 @@ image/jpeg                   jpeg jpe jpg
 
 image/tiff                   tiff tif
 
+image/png                    png
+
 # Audio video specific MIME types
 
 

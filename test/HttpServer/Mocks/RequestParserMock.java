@@ -1,21 +1,30 @@
 package HttpServer.Mocks;
 
+import HttpServer.Exceptions.BadRequestException;
 import HttpServer.Request;
-import HttpServer.RequestHeader;
 import HttpServer.RequestParser;
+import HttpServer.Utility.InputStreamReader;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
  * Author: Myles Megyesi
  */
-public class RequestParserMock extends RequestParser{
+public class RequestParserMock extends RequestParser {
+
+    public boolean throwOnParse = false;
+
+    public RequestParserMock(boolean throwOnParse) {
+        this.throwOnParse = throwOnParse;
+    }
 
     @Override
-    public Request parse(InputStream inputStream) {
+    public Request parse(InputStream inputStream, InputStreamReader inputStreamReader) throws BadRequestException {
         this.calledCount++;
-        return new RequestMock("", "", "", "", new ArrayList<RequestHeader>(), "", "");
+        if (this.throwOnParse) {
+            throw new BadRequestException("Whoops!");
+        }
+        return new RequestMock();
     }
 
     public int getCalledCount() {

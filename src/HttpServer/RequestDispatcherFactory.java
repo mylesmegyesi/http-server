@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 /**
  * Author: Myles Megyesi
  */
-public class RequestDispatcherFactory implements SocketServer.RequestHandlerFactory {
+public class RequestDispatcherFactory implements SocketServer.RequestDispatcherFactory {
 
     public RequestDispatcherFactory(RequestParser requestParser, ResponseWriter responseWriter, List<RequestHandler> requestHandlers, Response notFoundResponse, Logger logger) {
         this.requestParser = requestParser;

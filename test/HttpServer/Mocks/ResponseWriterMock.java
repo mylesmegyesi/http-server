@@ -1,7 +1,7 @@
 package HttpServer.Mocks;
 
-import HttpServer.ResponseWriter;
 import HttpServer.Response;
+import HttpServer.ResponseWriter;
 
 import java.io.OutputStream;
 

@@ -13,6 +13,6 @@ import java.util.ArrayList;
 public class NotFound extends Response {
 
     public NotFound() {
-        super(new ResponseStatusLine("HTTP/1.1", 404, "Not Found"), new ArrayList<ResponseHeader>(), new ByteArrayInputStream("404: Resouce Not Found".getBytes()));
+        super(new ResponseStatusLine("HTTP/1.1", 404, "Not Found"), new ArrayList<ResponseHeader>(), new ByteArrayInputStream("404: Resource Not Found".getBytes()));
     }
 }

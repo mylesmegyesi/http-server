@@ -30,7 +30,7 @@ public class RequestParser {
         return requestLine.trim().split("\\s+");
     }
 
-    public RequestLine parseRequestItems(String[] requestLineItems) throws IOException, BadRequestException {
+    public RequestLine parseRequestItems(String[] requestLineItems) {
         String[] requestUriItems = parseRequestUri(requestLineItems[1]);
         return new RequestLine(requestLineItems[0], requestUriItems[0], requestUriItems[1], requestLineItems[2]);
     }

@@ -6,7 +6,7 @@
 
     <groupId>org.clojars.mylesmegyesi</groupId>
     <artifactId>http-server</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -23,9 +23,9 @@
             <version>4.8.2</version>
         </dependency>
         <dependency>
-            <groupId>socket-server</groupId>
+            <groupId>org.clojars.mylesmegyesi</groupId>
             <artifactId>socket-server</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -12,16 +12,16 @@ public class SocketServerMock extends SocketServer {
     public int stopCalledCount = 0;
 
     public SocketServerMock() {
-        super(0, null, null);
+        super(0, null);
     }
 
     @Override
-    public void startListening() {
+    public void start() {
         this.startCalledCount++;
     }
 
     @Override
-    public void stopListening() {
+    public void stop() {
         this.stopCalledCount++;
     }
 }

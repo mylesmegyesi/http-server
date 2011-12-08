@@ -21,10 +21,10 @@ public class InputStreamReader {
     }
 
     private boolean isReturn(int theByte, InputStream inputStream) throws IOException {
-        return (theByte == carriageReturn && eatNextCharacterIfLineFeed(inputStream, theByte)) || theByte == lineFeed;
+        return theByte == lineFeed || (theByte == carriageReturn && eatNextCharacterIfLineFeed(inputStream));
     }
 
-    private boolean eatNextCharacterIfLineFeed(InputStream inputStream, int theByte) throws IOException {
+    private boolean eatNextCharacterIfLineFeed(InputStream inputStream) throws IOException {
         inputStream.mark(1);
         if (inputStream.read() != lineFeed) {
             inputStream.reset();

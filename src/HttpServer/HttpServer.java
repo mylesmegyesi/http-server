@@ -1,9 +1,10 @@
 package HttpServer;
 
 import HttpServer.Responses.NotFound;
+import HttpServer.Utility.Logging;
 import SocketServer.SocketServer;
-import SocketServer.Utility.Logging;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,28 +29,28 @@ public class HttpServer {
         this.requestHandlers = requestHandlers;
     }
 
-    public void start() {
+    public void start() throws IOException {
         synchronized (startUpShutdownLock) {
-            Logger logger = Logging.getLoggerAndSetLevel(this.getClass().getName(), Level.ALL);
+            Logger logger = new Logging().getLoggerAndSetLevel(this.getClass().getName(), Level.ALL);
             initSocketServer(this.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), this.requestHandlers, new NotFound(), logger), logger);
         }
-        this.socketServer.startListening();
+        this.socketServer.start();
     }
 
     public void initSocketServer(int port, RequestDispatcherFactory requestDispatcherFactory, Logger logger) {
         if (this.socketServer == null) {
-            this.socketServer = new SocketServer(port, requestDispatcherFactory, logger);
+            this.socketServer = new SocketServer(port, requestDispatcherFactory);
         }
     }
 
     public void stop() {
         synchronized (startUpShutdownLock) {
             if (this.socketServer != null) {
-                this.socketServer.stopListening();
+                this.socketServer.stop();
                 this.socketServer = null;
             }
         }
     }
 
-    private Object startUpShutdownLock = new Object();
+    private final Object startUpShutdownLock = new Object();
 }

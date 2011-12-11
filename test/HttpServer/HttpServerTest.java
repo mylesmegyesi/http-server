@@ -1,7 +1,6 @@
 package HttpServer;
 
 import HttpServer.Mocks.SocketServerMock;
-import HttpServer.Responses.NotFound;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class HttpServerTest {
     public void initSocketServerCreatesANewServerIfNull() throws Exception {
         HttpServer httpServer = new HttpServer(0);
         Logger logger = Logger.getLogger(this.getClass().getName());
-        httpServer.initSocketServer(httpServer.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), new NotFound(), logger), logger);
+        httpServer.initSocketServer(httpServer.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), logger), logger);
         assertTrue(httpServer.socketServer != null);
     }
 
@@ -62,7 +61,7 @@ public class HttpServerTest {
         SocketServerMock socketServer = new SocketServerMock();
         httpServer.socketServer = socketServer;
         Logger logger = Logger.getLogger(this.getClass().getName());
-        httpServer.initSocketServer(httpServer.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), new NotFound(), logger), logger);
+        httpServer.initSocketServer(httpServer.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), logger), logger);
         assertTrue(httpServer.socketServer == socketServer);
     }
 }

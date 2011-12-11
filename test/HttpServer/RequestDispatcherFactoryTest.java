@@ -1,8 +1,7 @@
 package HttpServer;
 
 import HttpServer.Mocks.SocketMock;
-import HttpServer.Responses.NotFound;
-import SocketServer.Utility.Logging;
+import HttpServer.Utility.Logging;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,8 +16,8 @@ import static junit.framework.Assert.assertEquals;
 public class RequestDispatcherFactoryTest {
     @Test
     public void createsARequestDispatcher() throws Exception {
-        Logger logger = Logging.getLoggerAndSetLevel(this.getClass().getName(), Level.OFF);
-        RequestDispatcherFactory requestDispatcherFactory = new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), new NotFound(), logger);
+        Logger logger = new Logging().getLoggerAndSetLevel(this.getClass().getName(), Level.OFF);
+        RequestDispatcherFactory requestDispatcherFactory = new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), new ArrayList<RequestHandler>(), logger);
         assertEquals(RequestDispatcher.class, requestDispatcherFactory.create(new SocketMock(false, false)).getClass());
     }
 }

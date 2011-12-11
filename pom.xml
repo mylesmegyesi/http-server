@@ -6,7 +6,7 @@
 
     <groupId>org.clojars.mylesmegyesi</groupId>
     <artifactId>http-server</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.6-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -17,7 +17,7 @@
 
     <dependencies>
         <dependency>
-            <scope> test </scope>
+            <scope>test</scope>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
@@ -27,11 +27,22 @@
             <artifactId>socket-server</artifactId>
             <version>0.6-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.clojars.mylesmegyesi</groupId>
+            <artifactId>http-request-parser</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory> src/ </sourceDirectory>
         <testSourceDirectory> test/ </testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>META-INF</directory>
+                <targetPath>META-INF</targetPath>
+            </resource>
+        </resources>
     </build>
 
 </project>

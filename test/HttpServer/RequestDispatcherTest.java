@@ -1,12 +1,17 @@
 package HttpServer;
 
+import HttpServer.Exceptions.BadRequestException;
 import HttpServer.Mocks.*;
 import HttpServer.Responses.NotFound;
-import SocketServer.Utility.Logging;
+import HttpServer.Utility.Logging;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,14 +33,14 @@ public class RequestDispatcherTest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        this.logger = Logging.getLoggerAndSetLevel(this.getClass().getName(), Level.OFF);
+        this.logger = new Logging().getLoggerAndSetLevel(this.getClass().getName(), Level.OFF);
         this.requestParserMock = new RequestParserMock(false);
         this.responder = new ResponseWriterMock();
         this.socket = new SocketMock(false, false);
         this.notFoundResponse = new NotFound();
         this.request = new RequestMock();
         this.requestHandlers = new ArrayList<RequestHandler>();
-        this.requestDispatcher = new RequestDispatcher(this.socket, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse, this.logger);
+        this.requestDispatcher = new RequestDispatcher(this.socket, this.requestParserMock, this.responder, this.requestHandlers, this.logger);
     }
 
     @org.junit.After
@@ -122,7 +127,7 @@ public class RequestDispatcherTest {
 
     @Test
     public void respondIsCalledIfNoRequestHandlersPresent() throws Exception {
-        this.requestDispatcher.handleRequest(this.socket.getOutputStream(), this.responder, this.request, this.requestHandlers, this.notFoundResponse);
+        this.requestDispatcher.handleRequest(this.socket.getOutputStream(), this.responder, this.request, this.requestHandlers);
         assertEquals("Doesn't call respond.", 1, this.responder.respondCallCount);
     }
 
@@ -170,13 +175,66 @@ public class RequestDispatcherTest {
 
     @Test
     public void runCallsTheRequestParser() throws Exception {
-        this.requestDispatcher.myRun(this.socket, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse);
-        assertEquals("The request parser was not called.", 1, this.requestParserMock.getCalledCount());
+        this.requestDispatcher.myRun(this.socket, this.requestParserMock, this.responder, this.requestHandlers);
+        assertEquals(1, this.requestParserMock.parseHeadersCalledCount);
+    }
+
+    @Test
+    public void parseRequestParsesTheHeaders() throws Exception {
+        this.requestDispatcher.parseRequest(new InputStreamMock(false), new OutputStreamMock(false), this.responder, this.requestParserMock);
+        assertEquals(1, this.requestParserMock.parseHeadersCalledCount);
+    }
+
+    @Test
+    public void sendsContinueForHttp11() throws Exception {
+        this.requestDispatcher.sendContinue(new RequestMock("HTTP/1.1"), new OutputStreamMock(false), this.responder);
+        assertEquals(1, this.responder.respondCallCount);
+    }
+
+    @Test
+    public void doesNotSendContinueForHttp10() throws Exception {
+        this.requestDispatcher.sendContinue(new RequestMock("HTTP/1.0"), new OutputStreamMock(false), this.responder);
+        assertEquals(0, this.responder.respondCallCount);
+    }
+
+    @Test
+    public void doesNotParseBodyForGet() throws Exception {
+        this.requestParserMock.action = "GET";
+        this.requestDispatcher.parseRequest(new InputStreamMock(false), new OutputStreamMock(false), this.responder, this.requestParserMock);
+        assertEquals(0, this.requestParserMock.parseBodyCalledCount);
+    }
+
+    @Test
+    public void parsesBodyForPost() throws Exception {
+        this.requestParserMock.action = "POST";
+        this.requestDispatcher.parseRequest(new InputStreamMock(false), new OutputStreamMock(false), this.responder, this.requestParserMock);
+        assertEquals(1, this.requestParserMock.parseBodyCalledCount);
+    }
+
+    @Test
+    public void parsesBodyForPut() throws Exception {
+        this.requestParserMock.action = "PUT";
+        this.requestDispatcher.parseRequest(new InputStreamMock(false), new OutputStreamMock(false), this.responder, this.requestParserMock);
+        assertEquals(1, this.requestParserMock.parseBodyCalledCount);
+    }
+
+    @Test
+    public void getsContentTypeWhenPresent() throws Exception {
+        Map<String, String> requestHeaders = new HashMap<String, String>();
+        requestHeaders.put("Content-Type", "text/html");
+        this.requestDispatcher.getContentType(requestHeaders);
+        assertEquals("text/html", this.requestDispatcher.getContentType(requestHeaders));
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void throwsWhenContentTypeNotPresent() throws Exception {
+        Map<String, String> requestHeaders = new HashMap<String, String>();
+        this.requestDispatcher.getContentType(requestHeaders);
     }
 
     @Test
     public void runClosesTheSocket() throws Exception {
-        this.requestDispatcher.myRun(this.socket, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse);
+        this.requestDispatcher.myRun(this.socket, this.requestParserMock, this.responder, this.requestHandlers);
         assertEquals("The socket is not closed", 1, this.socket.closeCalledCount);
     }
 
@@ -185,7 +243,7 @@ public class RequestDispatcherTest {
         InputStreamMock inputStreamMock = new InputStreamMock(false);
         OutputStreamMock outputStreamMock = new OutputStreamMock(false);
         SocketMock socketMock = new SocketMock(false, false, inputStreamMock, outputStreamMock);
-        this.requestDispatcher.myRun(socketMock, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse);
+        this.requestDispatcher.myRun(socketMock, this.requestParserMock, this.responder, this.requestHandlers);
         assertEquals("The input stream is not closed", 1, inputStreamMock.closeCalledCount);
         assertEquals("The output stream is not closed", 1, outputStreamMock.closeCalledCount);
     }
@@ -194,7 +252,7 @@ public class RequestDispatcherTest {
     public void threadRunEatsAnIoException() throws Exception {
         SocketMock socketMock = new SocketMock(true, false);
         try {
-            this.requestDispatcher = new RequestDispatcher(socketMock, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse, this.logger);
+            this.requestDispatcher = new RequestDispatcher(socketMock, this.requestParserMock, this.responder, this.requestHandlers, this.logger);
             Thread thread = new Thread(this.requestDispatcher);
             thread.start();
             thread.join();
@@ -207,13 +265,17 @@ public class RequestDispatcherTest {
     public void threadRunEatsABadRequest() throws Exception {
         this.requestParserMock = new RequestParserMock(true);
         try {
-            this.requestDispatcher = new RequestDispatcher(socket, this.requestParserMock, this.responder, this.requestHandlers, this.notFoundResponse, this.logger);
+            this.requestDispatcher = new RequestDispatcher(socket, this.requestParserMock, this.responder, this.requestHandlers, this.logger);
             Thread thread = new Thread(this.requestDispatcher);
             thread.start();
             thread.join();
         } catch (Exception e) {
             fail("Doesn't eat it.");
         }
+    }
+
+    private InputStream stringToStream(String str) {
+        return new ByteArrayInputStream(str.getBytes());
     }
 
 }

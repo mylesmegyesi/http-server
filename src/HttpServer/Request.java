@@ -1,20 +1,33 @@
 package HttpServer;
 
-import java.io.InputStream;
-import java.util.List;
+import HttpRequestParser.HttpRequest;
+
+import java.util.Map;
 
 /**
  * Author: Myles Megyesi
  */
 public class Request {
 
-    public RequestLine requestLine;
-    public InputStream body;
-    public List<RequestHeader> requestHeaders;
+    public String action;
+    public String url;
+    public String protocolVersion;
+    public Map<String, String> requestHeaders;
+    public Map<String, Object> parameters;
 
-    public Request(RequestLine requestLine, List<RequestHeader> requestHeaders, InputStream body) {
-        this.requestLine = requestLine;
+    public Request(String action, String url, String protocolVersion, Map<String, String> requestHeaders, Map<String, Object> parameters) {
+        this.action = action;
+        this.url = url;
+        this.protocolVersion = protocolVersion;
         this.requestHeaders = requestHeaders;
-        this.body = body;
+        this.parameters = parameters;
+    }
+
+    public Request(HttpRequest request) {
+        this.action = request.action;
+        this.url = request.url;
+        this.protocolVersion = request.version;
+        this.requestHeaders = request.requestHeaders;
+        this.parameters = request.parameters;
     }
 }

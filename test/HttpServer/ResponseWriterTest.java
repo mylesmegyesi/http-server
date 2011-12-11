@@ -55,9 +55,22 @@ public class ResponseWriterTest {
     }
 
     @Test
+    public void writesNothingWhenNoHeaders() throws Exception {
+        List<ResponseHeader> responseHeaders = new ArrayList<ResponseHeader>();
+        responseWriter.writeHeaders(this.outputStream, responseHeaders);
+        assertEquals("", this.outputStream.toString());
+    }
+
+    @Test
     public void writesBody() throws Exception {
         responseWriter.writeBody(this.outputStream, new ByteArrayInputStream("response".getBytes()));
         assertEquals("Builds the body incorrectly.", "response\r\n", this.outputStream.toString());
+    }
+
+    @Test
+    public void writesNothingWhenBodyIsEmpty() throws Exception {
+        responseWriter.writeBody(this.outputStream, new ByteArrayInputStream("".getBytes()));
+        assertEquals("", this.outputStream.toString());
     }
 
     @Test

@@ -10,21 +10,19 @@ import java.util.logging.Logger;
  */
 public class RequestDispatcherFactory implements SocketServer.RequestDispatcherFactory {
 
-    public RequestDispatcherFactory(RequestParser requestParser, ResponseWriter responseWriter, List<RequestHandler> requestHandlers, Response notFoundResponse, Logger logger) {
+    public RequestDispatcherFactory(RequestParser requestParser, ResponseWriter responseWriter, List<RequestHandler> requestHandlers, Logger logger) {
         this.requestParser = requestParser;
         this.responseWriter = responseWriter;
         this.requestHandlers = requestHandlers;
-        this.notFoundResponse = notFoundResponse;
         this.logger = logger;
     }
 
     public Runnable create(Socket socket) {
-        return new RequestDispatcher(socket, this.requestParser, this.responseWriter, this.requestHandlers, this.notFoundResponse, this.logger);
+        return new RequestDispatcher(socket, this.requestParser, this.responseWriter, this.requestHandlers, this.logger);
     }
 
     private RequestParser requestParser;
     private ResponseWriter responseWriter;
     private List<RequestHandler> requestHandlers;
-    private Response notFoundResponse;
     private Logger logger;
 }

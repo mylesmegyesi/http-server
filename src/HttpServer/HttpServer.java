@@ -1,6 +1,5 @@
 package HttpServer;
 
-import HttpServer.Responses.NotFound;
 import HttpServer.Utility.Logging;
 import SocketServer.SocketServer;
 
@@ -32,7 +31,7 @@ public class HttpServer {
     public void start() throws IOException {
         synchronized (startUpShutdownLock) {
             Logger logger = new Logging().getLoggerAndSetLevel(this.getClass().getName(), Level.ALL);
-            initSocketServer(this.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), this.requestHandlers, new NotFound(), logger), logger);
+            initSocketServer(this.port, new RequestDispatcherFactory(new RequestParser(), new ResponseWriter(), this.requestHandlers, logger), logger);
         }
         this.socketServer.start();
     }

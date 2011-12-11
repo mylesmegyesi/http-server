@@ -1,17 +1,24 @@
 package HttpServer.Mocks;
 
 import HttpServer.Request;
-import HttpServer.RequestHeader;
-import HttpServer.RequestLine;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: Myles Megyesi
  */
 public class RequestMock extends Request {
+
+    public RequestMock(String action, String version, Map<String, String> requestHeaders) {
+        super(action, "", version, requestHeaders, new HashMap<String, Object>());
+    }
+
+    public RequestMock(String version) {
+        super("", "", version, new HashMap<String, String>(), new HashMap<String, Object>());
+    }
+
     public RequestMock() {
-        super(new RequestLine("1", "2", "3", "4"), new ArrayList<RequestHeader>(), new ByteArrayInputStream("".getBytes()));
+        super("", "", "", new HashMap<String, String>(), new HashMap<String, Object>());
     }
 }

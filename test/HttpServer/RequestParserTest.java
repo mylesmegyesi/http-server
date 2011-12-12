@@ -42,14 +42,14 @@ public class RequestParserTest {
 
     @Test
     public void parseBodyCallsParseBody() throws Exception {
-        this.requestParser.parseBody(null, null);
+        this.requestParser.parseBody(null, null, 0);
         assertEquals(1, this.parser.parseBodyCalledCount);
     }
 
     @Test(expected = BadRequestException.class)
     public void throwsBadRequestOnParseExceptionBody() throws Exception {
         this.parser.throwsOnParse = true;
-        this.requestParser.parseBody(null, null);
+        this.requestParser.parseBody(null, null, 0);
     }
 
 

@@ -26,7 +26,7 @@ public class HttpRequestParserMock extends HttpRequestParser {
     }
 
     @Override
-    public Map<String, Object> parseBody(InputStream inputStream, String contentType) throws ParseException {
+    public Map<String, Object> parseBody(InputStream inputStream, String contentType, int contentLength) throws ParseException {
         this.parseBodyCalledCount++;
         if (this.throwsOnParse) {
             throw new ParseException("Whoops");

@@ -59,7 +59,7 @@ public class RequestDispatcher implements Runnable {
         Request request = requestParser.parseRequestLineAndHeaders(inputStream);
         this.sendContinue(request, outputStream, responseWriter);
         if (actionSuggestsBody(request)) {
-            request.parameters = requestParser.parseBody(inputStream, this.getContentType(request.requestHeaders));
+            request.parameters = requestParser.parseBody(inputStream, this.getContentType(request.requestHeaders), this.getContentLength(request.requestHeaders));
         }
         return request;
     }
@@ -75,6 +75,13 @@ public class RequestDispatcher implements Runnable {
             throw new BadRequestException("Content Type required for Post and Put");
         }
         return requestHeaders.get("Content-Type");
+    }
+
+    public int getContentLength(Map<String, String> requestHeaders) throws BadRequestException {
+        if (!requestHeaders.containsKey("Content-Length")) {
+            throw new BadRequestException("Content Length required for Post and Put");
+        }
+        return Integer.parseInt(requestHeaders.get("Content-Length"));
     }
 
     public boolean actionSuggestsBody(Request request) {

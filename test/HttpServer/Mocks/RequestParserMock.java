@@ -31,11 +31,12 @@ public class RequestParserMock extends RequestParser {
         }
         Map<String, String> requestHeaders = new HashMap<String, String>();
         requestHeaders.put("Content-Type", "text/html");
+        requestHeaders.put("Content-Length", "0");
         return new RequestMock(this.action, this.version, requestHeaders);
     }
 
     @Override
-    public Map<String, Object> parseBody(InputStream inputStream, String contentType) {
+    public Map<String, Object> parseBody(InputStream inputStream, String contentType, int contentLength) {
         this.parseBodyCalledCount++;
         return null;
     }

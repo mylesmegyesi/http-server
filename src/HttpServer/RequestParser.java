@@ -31,9 +31,9 @@ public class RequestParser {
         }
     }
 
-    public Map<String, Object> parseBody(InputStream inputStream, String contentType) throws IOException, BadRequestException {
+    public Map<String, Object> parseBody(InputStream inputStream, String contentType, int contentLength) throws IOException, BadRequestException {
         try {
-            return this.requestParser.parseBody(inputStream, contentType);
+            return this.requestParser.parseBody(inputStream, contentType, contentLength);
         } catch (ParseException e) {
             throw new BadRequestException(e.getMessage());
         }

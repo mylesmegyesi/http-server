@@ -1,5 +1,6 @@
 package HttpServer;
 
+import HttpServer.Mocks.InputStreamMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +72,13 @@ public class ResponseWriterTest {
     public void writesNothingWhenBodyIsEmpty() throws Exception {
         responseWriter.writeBody(this.outputStream, new ByteArrayInputStream("".getBytes()));
         assertEquals("", this.outputStream.toString());
+    }
+
+    @Test
+    public void writesBodyClosesTheInputStream() throws Exception {
+        InputStreamMock inputStreamMock = new InputStreamMock(false);
+        responseWriter.writeBody(this.outputStream, inputStreamMock);
+        assertEquals(1, inputStreamMock.closeCalledCount);
     }
 
     @Test

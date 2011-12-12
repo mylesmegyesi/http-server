@@ -48,6 +48,7 @@ public class ResponseWriter {
         if (totalRead > 0) {
             outputStream.write("\r\n".getBytes());
         }
+        body.close();
     }
 
     private int readFromWriteTo(InputStream body, OutputStream outputStream, byte[] buffer) throws IOException {

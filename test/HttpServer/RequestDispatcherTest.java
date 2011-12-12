@@ -236,7 +236,7 @@ public class RequestDispatcherTest {
     public void getsContentLengthWhenPresent() throws Exception {
         Map<String, String> requestHeaders = new HashMap<String, String>();
         requestHeaders.put("Content-Length", "0");
-        this.requestDispatcher.getContentType(requestHeaders);
+        this.requestDispatcher.getContentLength(requestHeaders);
         assertEquals(0, this.requestDispatcher.getContentLength(requestHeaders));
     }
 

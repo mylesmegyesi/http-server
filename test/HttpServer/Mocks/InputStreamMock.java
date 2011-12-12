@@ -16,7 +16,7 @@ public class InputStreamMock extends InputStream {
 
     @Override
     public int read() throws IOException {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return -1;
     }
 
     @Override

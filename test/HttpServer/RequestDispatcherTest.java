@@ -233,6 +233,20 @@ public class RequestDispatcherTest {
     }
 
     @Test
+    public void getsContentLengthWhenPresent() throws Exception {
+        Map<String, String> requestHeaders = new HashMap<String, String>();
+        requestHeaders.put("Content-Length", "0");
+        this.requestDispatcher.getContentType(requestHeaders);
+        assertEquals(0, this.requestDispatcher.getContentLength(requestHeaders));
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void throwsWhenContentLengthNotPresent() throws Exception {
+        Map<String, String> requestHeaders = new HashMap<String, String>();
+        this.requestDispatcher.getContentLength(requestHeaders);
+    }
+
+    @Test
     public void runClosesTheSocket() throws Exception {
         this.requestDispatcher.myRun(this.socket, this.requestParserMock, this.responder, this.requestHandlers);
         assertEquals("The socket is not closed", 1, this.socket.closeCalledCount);
